@@ -1,0 +1,103 @@
+import 'dart:io';
+
+import 'package:face_recognition/kid/view/newprofilekidu.dart';
+import 'package:flutter/material.dart';
+
+class ShowImageGalleryNewKidUnrecognize extends StatefulWidget {
+  ShowImageGalleryNewKidUnrecognize(
+      this.image,
+      this.imageMom,
+      this.imageDad,
+      this.categoryImagePage,
+      this.categoryImageMomPage,
+      this.categoryImageDadPage,
+      this.uid,
+      this.user);
+
+  final String image;
+  final String imageMom;
+  final String imageDad;
+  final int categoryImagePage;
+  final int categoryImageMomPage;
+  final int categoryImageDadPage;
+  final String uid;
+  final String user;
+
+  @override
+  _ShowImageGalleryNewKidUnrecognizeState createState() =>
+      _ShowImageGalleryNewKidUnrecognizeState();
+}
+
+class _ShowImageGalleryNewKidUnrecognizeState
+    extends State<ShowImageGalleryNewKidUnrecognize> {
+  String imageGallery;
+  final String galleryDB = "01Gallery";
+  final String navigate = "form";
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.0),
+          child: AppBar(
+            centerTitle: true,
+            title: Text('Picture'),
+            backgroundColor: Colors.purple[200],
+            automaticallyImplyLeading: false,
+          )),
+      body: Image.file(
+        File(widget.image),
+        fit: BoxFit.cover,
+        height: double.infinity,
+        width: double.infinity,
+        alignment: Alignment.center,
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton.extended(
+            heroTag: null,
+            onPressed: () {
+              setState(() {
+                imageGallery = widget.image;
+                print("Image Gallery ${widget.image}");
+                //buat ni
+                Navigator.of(context)
+                    .pushReplacement(MaterialPageRoute(builder: (_) {
+                  return NewProfileKidUnrecognize(
+                      galleryDB,
+                      galleryDB,
+                      galleryDB,
+                      imageGallery,
+                      widget.imageMom,
+                      widget.imageDad,
+                      widget.categoryImagePage,
+                      widget.categoryImageMomPage,
+                      widget.categoryImageDadPage,
+                      widget.uid,
+                      widget.user);
+                }));
+              });
+            },
+            label: Text('Save'),
+            icon: Icon(Icons.done),
+          ),
+          SizedBox(width: 10),
+          FloatingActionButton.extended(
+            heroTag: null,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            label: Text('Cancel'),
+            icon: Icon(Icons.cancel),
+          ),
+        ],
+      ),
+    );
+  }
+}

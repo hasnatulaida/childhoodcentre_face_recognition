@@ -1,0 +1,17 @@
+class User {
+  String firstName;
+  String lastName;
+  bool isCheck;
+ 
+  User({this.firstName, this.lastName, this.isCheck});
+ 
+  static List<User> getUsers() {
+    return <User>[
+      User(firstName: "Aaryan tuygjghdtgftetyfyurtwrdy", lastName: "Shah", isCheck: true),
+      User(firstName: "Ben", lastName: "John", isCheck: true),
+      User(firstName: "Carrie", lastName: "Brown", isCheck: true),
+      User(firstName: "Deep", lastName: "Sen", isCheck: true),
+      User(firstName: "Emily", lastName: "Jane", isCheck: true),
+    ];
+  }
+}

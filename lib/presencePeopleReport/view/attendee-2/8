@@ -1,0 +1,148 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:face_recognition/Authentication/model/login.dart';
+import 'package:face_recognition/Authentication/model/loginData.dart';
+import 'package:face_recognition/admin/view/adminmenu.dart';
+import 'package:face_recognition/attendeeList/model/attendee.dart';
+import 'package:face_recognition/attendeeList/service/attendeeDatabaseService.dart';
+import 'package:face_recognition/staff/view/staffmenu.dart';
+import 'package:flutter/material.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
+
+class AttendeeList extends StatefulWidget {
+  @override
+  _AttendeeListState createState() => _AttendeeListState();
+}
+
+class _AttendeeListState extends State<AttendeeList> {
+  List<Attendee> attendee;
+
+  List<Login> loginUser = globalLogin;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60.0),
+        child: AppBar(
+          centerTitle: true,
+          title: Text('People Presence Report'),
+          backgroundColor: Colors.purple[200],
+          automaticallyImplyLeading: false,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                if (loginUser[0].user == "Admin") {
+                  Navigator.push(
+                    context,
+                    new MaterialPageRoute(builder: (context) => (AdminMenu())),
+                  );
+                } else if (loginUser[0].user == "Staff") {
+                  Navigator.push(
+                    context,
+                    new MaterialPageRoute(builder: (context) => (StaffMenu())),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+      body: StreamBuilder<List<Attendee>>(
+          stream: AttendeeDatabaseService().listAttendee(),
+          builder: (context, AsyncSnapshot<List<Attendee>> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Text('Loading..');
+              case ConnectionState.waiting:
+                return Text('Loading...');
+              case ConnectionState.active:
+                attendee = snapshot.data;
+                print("Attendee $attendee");
+
+                if (attendee.isNotEmpty) {
+                  print("attendee not empty");
+                  return StickyGroupedListView<Attendee, DateTime>(
+                    elements: attendee,
+                    order: StickyGroupedListOrder.ASC,
+                    groupBy: (Attendee element) => DateTime(
+                        element.date.toDate().year,
+                        element.date.toDate().month,
+                        element.date.toDate().day),
+                    groupComparator: (DateTime value1, DateTime value2) =>
+                        value2.compareTo(value1),
+                    itemComparator: (Attendee element1, Attendee element2) =>
+                        element1.date
+                            .toDate()
+                            .compareTo(element2.date.toDate()),
+                    floatingHeader: true,
+                    groupSeparatorBuilder: (Attendee element) => Container(
+                      height: 50,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: 120,
+                          decoration: BoxDecoration(
+                            color: Colors.blue[300],
+                            border: Border.all(
+                              color: Colors.blue[300],
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20.0)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '${element.date.toDate().day}. ${element.date.toDate().month}, ${element.date.toDate().year}',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    itemBuilder: (_, Attendee element) {
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6.0),
+                        ),
+                        elevation: 8.0,
+                        margin: new EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 6.0),
+                        child: Container(
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 20.0, vertical: 10.0),
+                            // leading: Container(
+                            //   width: 10.0,
+                            //   height: 10.0,
+                            //   decoration: BoxDecoration(
+                            //       color: Colors.white,
+                            //       image: DecorationImage(
+                            //           image: NetworkImage(unknown[i].image),
+                            //           fit: BoxFit.cover),
+                            //       borderRadius:
+                            //           BorderRadius.all(Radius.circular(75.0)),
+                            //       boxShadow: [
+                            //         BoxShadow(blurRadius: 7.0, color: Colors.black)
+                            //       ]),
+                            // ),
+                            title: Text(element.name),
+                            trailing: Text('${element.date.toDate().hour}:00'),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return Container();
+                }
+                break;
+
+              case ConnectionState.done:
+                return Text('\$${snapshot.data} (closed)');
+            }
+            return null;
+          }),
+    );
+  }
+}
