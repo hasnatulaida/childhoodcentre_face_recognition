@@ -16,7 +16,11 @@ Used Firebase ML Vision to detect faces .
 
 Convert Tensorflow implementation of [MobileFaceNet](https://github.com/sirius-ai/MobileFaceNet_TF) model into tflite.
 
+
+
+
 ## Installing
+
 
 **Step 1:** Download or clone this project
 ```
