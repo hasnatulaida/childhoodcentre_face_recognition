@@ -26,17 +26,15 @@ Convert Tensorflow implementation of [MobileFaceNet](https://github.com/sirius-a
 ```
 
 **Step 2:** Go to project root and execute the following command in console to get the required dependencies: 
-
 ```
 flutter pub get 
 ```
 
 **Step 3:** Add dynamic libraries for flutter_tflite package to work:
-
 [Follow these instructions](https://pub.dev/packages/tflite_flutter#important-initial-setup)
 
-**Step 4:** Install flutter app
 
+**Step 4:** Install flutter app
 ```
 flutter run 
 ```
